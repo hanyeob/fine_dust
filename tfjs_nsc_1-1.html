@@ -7,24 +7,13 @@
   </head>
   <body>
     <script>
-      dfd
-        .read_csv(
-          "https://raw.githubusercontent.com/hanyeob/fine_dust/master/nsc_1_1_labeled_scaled.csv"
-        )
-        .then(function (data) {
+      dfd.read_csv("https://raw.githubusercontent.com/hanyeob/fine_dust/master/nsc_1_1_labeled_scaled.csv").then(function (data) {
           console.log(data);
           data.print();
-          독립변수 = data.loc({
-            columns: [
-              // "CO2_outdoor",
-              // "PM2.5_outdoor",
-              // "PM10_outdoor",
-              // "CO2_classroom",
-              // "PM2.5_classroom",
-              // "PM10_classroom",
-              "CO2_classroom_change",
-              "PM2.5_classroom_change",
-              "PM10_classroom_change",
+          독립변수 = data.loc({columns: [
+                  "CO2_outdoor",              "PM2.5_outdoor",              "PM10_outdoor",
+                  "CO2_classroom",            "PM2.5_classroom",            "PM10_classroom",
+                  "CO2_classroom_change",     "PM2.5_classroom_change",     "PM10_classroom_change",
             ],
           });
           독립변수.print();
@@ -57,22 +46,10 @@
             epochs: 100,
             callbacks: {
               onEpochEnd: function (epoch, logs) {
-                console.log(
-                  "epoch",
-                  epoch,
-                  logs,
-                  "RMSE=>",
-                  Math.sqrt(logs.loss)
-                );
+                console.log("epoch",epoch,logs,"RMSE=>",Math.sqrt(logs.loss));
                 _history.push(logs);
-                tfvis.show.history({ name: "loss", tab: "역사" }, _history, [
-                  "loss",
-                ]);
-                tfvis.show.history(
-                  { name: "accuracy", tab: "역사" },
-                  _history,
-                  ["acc"]
-                );
+                tfvis.show.history({ name: "loss", tab: "역사" }, _history, ["loss",]);
+                tfvis.show.history({ name: "accuracy", tab: "역사" },_history,["acc"]);
               },
             },
           };
@@ -82,7 +59,7 @@
             .then(function (result) {
               //         // 4. 모델을 이용합니다.
               //         // 4.1 기존의 데이터를 이용
-              예측한결과 = new dfd.DataFrame(model.predict(독립변수.tensor));
+              예측한결과 = new dfd.DataFrame(model.predict(예측독립변수.tensor));
               예측한결과.print();
               재실여부.print();
               model.save("downloads://fine-dust-attend-model");
