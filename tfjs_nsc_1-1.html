@@ -13,7 +13,7 @@
           독립변수 = data.loc({columns: [
                   "CO2_outdoor",              "PM2.5_outdoor",              "PM10_outdoor",
                   "CO2_classroom",            "PM2.5_classroom",            "PM10_classroom",
-                  "CO2_classroom_change",     "PM2.5_classroom_change",     "PM10_classroom_change",
+                  "CO2_classroom_change",     "PM2.5_classroom_change",      "PM10_classroom_change",
             ],
           });
           독립변수.print();
@@ -22,8 +22,8 @@
           data["attend_manual"].print();
           재실여부.print();
 
-          var X = tf.input({ shape: [3] });
-          var H = tf.layers.dense({ units: 2, activation: "relu" }).apply(X);
+          var X = tf.input({ shape: [9] });
+          var H = tf.layers.dense({ units: 5, activation: "relu" }).apply(X);
           //   var Y = tf.layers.dense({ units: 3 }).apply(H);
           var Y = tf.layers.dense({ units: 2, activation: "softmax" }).apply(H);
           model = tf.model({ inputs: X, outputs: Y });
