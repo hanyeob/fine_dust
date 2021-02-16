@@ -13,8 +13,7 @@ from sklearn.preprocessing import StandardScaler
 def load_data(data):
     print('start loading', data)
     # 데이터 불러오기
-    data_address = 'https://raw.githubusercontent.com/hanyeob/fine_dust/master/csv%20files/' + \
-        data + ".csv"
+    data_address = 'https://raw.githubusercontent.com/hanyeob/fine_dust/master/csv%20files/'+data+'.csv'
     df = pd.read_csv(data_address)
     df = df[['tt', '0.3_outdoor', '0.5_outdoor', '1.0_outdoor', '3.0_outdoor',
              '5.0_outdoor', '10.0_outdoor', '0.3_classroom', '0.5_classroom',
@@ -79,10 +78,7 @@ def scaling(df):
 def main():
     print("start")
     # sdc outdoor에 누락데이터 많음
-    classlist = ['isc_2_1', 'isc_3_1', 'isc_3_3',
-                 'nsc_1_1', 'nsc_1_2', 'nsc_2_5',
-                 'sdc_1_1', 'sdc_2_1',
-                 'sic_2_6', 'sic_4_2']
+    classlist = ['bbc','isc','nsc','sdc','sic']
     for i in classlist:
         df = load_data(i)
         unit_change(df)
