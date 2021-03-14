@@ -59,24 +59,26 @@ def make_change_column(df):
        ] = df[['PM2.5_classroom', 'PM10_classroom', 'CO2_classroom']] - df.shift(1)[['PM2.5_classroom', 'PM10_classroom', 'CO2_classroom']]
     df.dropna(inplace=True)
 
+def add_time(df):
+    df = pd.concat([df,df.index.to_frame().loc[:,'tt'].dt.hour*60+df.index.to_frame().loc[:,'tt'].dt.minute], axis=1)
+    df.rename(columns={"tt": "time"}, inplace=True)
+    return df
 
 def scaling(df):
     scaler = StandardScaler()
     scaled_data = scaler.fit_transform(df[
         ['CO2_outdoor', 'PM2.5_outdoor', 'PM10_outdoor',
          'CO2_classroom', 'PM2.5_classroom', 'PM10_classroom',
-         'CO2_classroom_change', 'PM2.5_classroom_change', 'PM10_classroom_change']
+         'CO2_classroom_change', 'PM2.5_classroom_change', 'PM10_classroom_change',
+         'time']
     ])
     scaled_data = pd.DataFrame(data=scaled_data, columns=['CO2_outdoor', 'PM2.5_outdoor', 'PM10_outdoor',
                                                           'CO2_classroom', 'PM2.5_classroom', 'PM10_classroom',
-                                                          'CO2_classroom_change', 'PM2.5_classroom_change', 'PM10_classroom_change'])
+                                                          'CO2_classroom_change', 'PM2.5_classroom_change', 'PM10_classroom_change',
+                                                          'time'])
     scaled_data.set_index(df.index, inplace=True)
     return scaled_data
 
-def add_time(df):
-    df = pd.concat([df,df.index.to_frame().loc[:,'tt'].dt.hour], axis=1)
-    df.rename(columns={"tt": "hour"}, inplace=True)
-    return df
 
 
 def main():
@@ -88,8 +90,8 @@ def main():
         unit_change(df)
         merge_to_PM(df)
         make_change_column(df)
+        df = add_time(df)
         scaled_data = scaling(df)
-        scaled_data = add_time(scaled_data)
         print(scaled_data.head())
         scaled_data.to_csv(f'./scaled_data/{i}_scaled.csv')
 
