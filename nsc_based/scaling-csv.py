@@ -73,6 +73,10 @@ def scaling(df):
     scaled_data.set_index(df.index, inplace=True)
     return scaled_data
 
+def add_time(df):
+    df = pd.concat([df,df.index.to_frame().loc[:,'tt'].dt.hour], axis=1)
+    df.rename(columns={"tt": "hour"}, inplace=True)
+    return df
 
 
 def main():
@@ -85,6 +89,8 @@ def main():
         merge_to_PM(df)
         make_change_column(df)
         scaled_data = scaling(df)
+        scaled_data = add_time(scaled_data)
+        print(scaled_data.head())
         scaled_data.to_csv(f'./scaled_data/{i}_scaled.csv')
 
 main()
