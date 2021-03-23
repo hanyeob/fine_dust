@@ -138,7 +138,7 @@ def main():
         make_change_column(df)
         df = add_time(df)
         scaled_data = scaling(df)
-        scaled_data = scaled_data.clip(-10, 10)
+        scaled_data = scaled_data.clip(-8, 8)
         print(scaled_data.head())
         scaled_data.to_csv(f"./scaled_data/{i}_scaled.csv")
 
