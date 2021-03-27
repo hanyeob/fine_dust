@@ -7,6 +7,7 @@ Created on Sat Feb 13 17:30:08 2021
 
 import numpy as np
 import pandas as pd
+import math
 from sklearn.preprocessing import StandardScaler
 
 
@@ -81,8 +82,15 @@ def add_time(df):
     df = pd.concat(
         [
             df,
-            df.index.to_frame().loc[:, "tt"].dt.hour * 60
-            + df.index.to_frame().loc[:, "tt"].dt.minute,
+            -np.cos(
+                (
+                    df.index.to_frame().loc[:, "tt"].dt.hour * 60
+                    + df.index.to_frame().loc[:, "tt"].dt.minute
+                )
+                * 2
+                * math.pi
+                / (24 * 60)
+            ),
         ],
         axis=1,
     )
