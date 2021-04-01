@@ -16,29 +16,25 @@ def load_data(data):
     # 데이터 불러오기
     data_address = (
         "https://raw.githubusercontent.com/hanyeob/fine_dust/master/csv%20files/"
-        + data
-        + ".csv"
-    )
+        + data + ".csv")
     df = pd.read_csv(data_address)
-    df = df[
-        [
-            "tt",
-            "0.3_outdoor",
-            "0.5_outdoor",
-            "1.0_outdoor",
-            "3.0_outdoor",
-            "5.0_outdoor",
-            "10.0_outdoor",
-            "0.3_classroom",
-            "0.5_classroom",
-            "1.0_classroom",
-            "3.0_classroom",
-            "5.0_classroom",
-            "10.0_classroom",
-            "CO2_outdoor",
-            "CO2_classroom",
-        ]
-    ]
+    df = df[[
+        "tt",
+        "0.3_outdoor",
+        "0.5_outdoor",
+        "1.0_outdoor",
+        "3.0_outdoor",
+        "5.0_outdoor",
+        "10.0_outdoor",
+        "0.3_classroom",
+        "0.5_classroom",
+        "1.0_classroom",
+        "3.0_classroom",
+        "5.0_classroom",
+        "10.0_classroom",
+        "CO2_outdoor",
+        "CO2_classroom",
+    ]]
     # tt열 시계열 & 인덱스
     df["tt"] = pd.to_datetime(df["tt"], format="%d-%m-%Y %H:%M:%S")
     df.set_index("tt", inplace=True)
@@ -49,58 +45,55 @@ def load_data(data):
 
 
 def unit_change(df):
-    df["0.3_outdoor"] = df["0.3_outdoor"] * 0.3 ** 3
-    df["0.5_outdoor"] = df["0.5_outdoor"] * 0.5 ** 3
-    df["1.0_outdoor"] = df["1.0_outdoor"] * 1.0 ** 3
-    df["3.0_outdoor"] = df["3.0_outdoor"] * 3.0 ** 3
-    df["5.0_outdoor"] = df["5.0_outdoor"] * 5.0 ** 3
-    df["10.0_outdoor"] = df["10.0_outdoor"] * 10.0 ** 3
-    df["0.3_classroom"] = df["0.3_classroom"] * 0.3 ** 3
-    df["0.5_classroom"] = df["0.5_classroom"] * 0.5 ** 3
-    df["1.0_classroom"] = df["1.0_classroom"] * 1.0 ** 3
-    df["3.0_classroom"] = df["3.0_classroom"] * 3.0 ** 3
-    df["5.0_classroom"] = df["5.0_classroom"] * 5.0 ** 3
-    df["10.0_classroom"] = df["10.0_classroom"] * 10.0 ** 3
+    df["0.3_outdoor"] = df["0.3_outdoor"] * 0.3**3
+    df["0.5_outdoor"] = df["0.5_outdoor"] * 0.5**3
+    df["1.0_outdoor"] = df["1.0_outdoor"] * 1.0**3
+    df["3.0_outdoor"] = df["3.0_outdoor"] * 3.0**3
+    df["5.0_outdoor"] = df["5.0_outdoor"] * 5.0**3
+    df["10.0_outdoor"] = df["10.0_outdoor"] * 10.0**3
+    df["0.3_classroom"] = df["0.3_classroom"] * 0.3**3
+    df["0.5_classroom"] = df["0.5_classroom"] * 0.5**3
+    df["1.0_classroom"] = df["1.0_classroom"] * 1.0**3
+    df["3.0_classroom"] = df["3.0_classroom"] * 3.0**3
+    df["5.0_classroom"] = df["5.0_classroom"] * 5.0**3
+    df["10.0_classroom"] = df["10.0_classroom"] * 10.0**3
 
 
 def merge_to_PM(df):
-    df["PM2.5_outdoor"] = np.sum(df.loc[:, "0.3_outdoor":"1.0_outdoor"], axis=1)
-    df["PM10_outdoor"] = np.sum(df.loc[:, "3.0_outdoor":"10.0_outdoor"], axis=1)
-    df["PM2.5_classroom"] = np.sum(df.loc[:, "0.3_classroom":"1.0_classroom"], axis=1)
-    df["PM10_classroom"] = np.sum(df.loc[:, "3.0_classroom":"10.0_classroom"], axis=1)
+    df["PM2.5_outdoor"] = np.sum(df.loc[:, "0.3_outdoor":"1.0_outdoor"],
+                                 axis=1)
+    df["PM10_outdoor"] = np.sum(df.loc[:, "3.0_outdoor":"10.0_outdoor"],
+                                axis=1)
+    df["PM2.5_classroom"] = np.sum(df.loc[:, "0.3_classroom":"1.0_classroom"],
+                                   axis=1)
+    df["PM10_classroom"] = np.sum(df.loc[:, "3.0_classroom":"10.0_classroom"],
+                                  axis=1)
 
 
 def moving_avg(df):
-    df[
-        [
-            "CO2_outdoor",
-            "PM2.5_outdoor",
-            "PM10_outdoor",
-            "CO2_classroom",
-            "PM2.5_classroom",
-            "PM10_classroom",
-        ]
-    ] = (
-        df[
-            [
-                "CO2_outdoor",
-                "PM2.5_outdoor",
-                "PM10_outdoor",
-                "CO2_classroom",
-                "PM2.5_classroom",
-                "PM10_classroom",
-            ]
-        ]
-        .rolling(5)
-        .mean()
-    )
+    df[[
+        "CO2_outdoor",
+        "PM2.5_outdoor",
+        "PM10_outdoor",
+        "CO2_classroom",
+        "PM2.5_classroom",
+        "PM10_classroom",
+    ]] = (df[[
+        "CO2_outdoor",
+        "PM2.5_outdoor",
+        "PM10_outdoor",
+        "CO2_classroom",
+        "PM2.5_classroom",
+        "PM10_classroom",
+    ]].rolling(5).mean())
 
 
 def make_change_column(df):
-    df[["PM2.5_classroom_change", "PM10_classroom_change", "CO2_classroom_change"]] = (
-        df[["PM2.5_classroom", "PM10_classroom", "CO2_classroom"]]
-        - df.shift(1)[["PM2.5_classroom", "PM10_classroom", "CO2_classroom"]]
-    )
+    df[[
+        "PM2.5_classroom_change", "PM10_classroom_change",
+        "CO2_classroom_change"
+    ]] = (df[["PM2.5_classroom", "PM10_classroom", "CO2_classroom"]] -
+          df.shift(1)[["PM2.5_classroom", "PM10_classroom", "CO2_classroom"]])
     df.dropna(inplace=True)
 
 
@@ -109,52 +102,30 @@ def add_time(df):
         [
             df,
             -np.cos(
-                (
-                    df.index.to_frame().loc[:, "tt"].dt.hour * 60
-                    + df.index.to_frame().loc[:, "tt"].dt.minute
-                )
-                * 2
-                * math.pi
-                / (24 * 60)
-            ),
+                (df.index.to_frame().loc[:, "tt"].dt.hour * 60 +
+                 df.index.to_frame().loc[:, "tt"].dt.minute) * 2 * math.pi /
+                (24 * 60)),
         ],
         axis=1,
     )
     df.rename(columns={"tt": "time"}, inplace=True)
+    df['day'] = df.index.to_frame().loc[:, "tt"].dt.weekday.values
     return df
 
 
 def scaling(df):
     scaler = StandardScaler()
-    scaled_data = scaler.fit_transform(
-        df[
-            [
-                "CO2_outdoor",
-                "PM2.5_outdoor",
-                "PM10_outdoor",
-                "CO2_classroom",
-                "PM2.5_classroom",
-                "PM10_classroom",
-                "CO2_classroom_change",
-                "PM2.5_classroom_change",
-                "PM10_classroom_change",
-                "time",
-            ]
-        ]
-    )
+    scaled_data = scaler.fit_transform(df[[
+        "CO2_outdoor", "PM2.5_outdoor", "PM10_outdoor", "CO2_classroom",
+        "PM2.5_classroom", "PM10_classroom", "CO2_classroom_change",
+        "PM2.5_classroom_change", "PM10_classroom_change", "time", "day"
+    ]])
     scaled_data = pd.DataFrame(
         data=scaled_data,
         columns=[
-            "CO2_outdoor",
-            "PM2.5_outdoor",
-            "PM10_outdoor",
-            "CO2_classroom",
-            "PM2.5_classroom",
-            "PM10_classroom",
-            "CO2_classroom_change",
-            "PM2.5_classroom_change",
-            "PM10_classroom_change",
-            "time",
+            "CO2_outdoor", "PM2.5_outdoor", "PM10_outdoor", "CO2_classroom",
+            "PM2.5_classroom", "PM10_classroom", "CO2_classroom_change",
+            "PM2.5_classroom_change", "PM10_classroom_change", "time", "day"
         ],
     )
     scaled_data.set_index(df.index, inplace=True)
