@@ -85,7 +85,7 @@ def moving_avg(df):
         "CO2_classroom",
         "PM2.5_classroom",
         "PM10_classroom",
-    ]].rolling(5).mean())
+    ]].rolling(window=5, center=True, min_periods=1).mean())
 
 
 def make_change_column(df):
